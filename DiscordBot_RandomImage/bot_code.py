@@ -33,13 +33,10 @@ for file in os.listdir('.\ImagePool/') :
 @client.command(pass_context = True)
 async def randompic (ctx, search: str) :
 
-	if search == 'list' : #If no search command it shows list of categories
+	if search == 'list' :
 		await client.say('Categories are : ')
-		catList = ''
 		for p in images[0] :
-			catList = catList + p + '\n'
-		await client.say(p)
-		
+			await client.say(p)
 	else :
 		#Uploads random image if search term is part of imagepool categories
 		if search in images[0] :
