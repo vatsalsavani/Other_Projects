@@ -33,22 +33,30 @@ for file in os.listdir('.\ImagePool/') :
 @client.command(pass_context = True)
 async def randompic (ctx, search: str) :
 
-	#Uploads random image if search term is part of imagepool categories
-	if search in images[0] :
-		CindexNum = images[0].index(search)
-		category = search
-		imageName = images[1][CindexNum][random.randint(0, len(images[1][CindexNum]) - 1)]
+	if search == 'list' : #If no search command it shows list of categories
+		await client.say('Categories are : ')
+		catList = ''
+		for p in images[0] :
+			catList = catList + p + '\n'
+		await client.say(p)
+		
+	else :
+		#Uploads random image if search term is part of imagepool categories
+		if search in images[0] :
+			CindexNum = images[0].index(search)
+			category = search
+			imageName = images[1][CindexNum][random.randint(0, len(images[1][CindexNum]) - 1)]
 
-	#If search term is not found, it uploads a random image from all
-	else :	
-		await client.say ('Sorry no such category, showing random image!')
-		CindexNum = random.randint(0, len(images[0]))
-		category = images[0][CindexNum]
-		imageName = images[1][int(CindexNum)][random.randint(0, len(images[1][CindexNum]) - 1)]
-	
-	sendimage = "./ImagePool/" + category + '/' + imageName
-	print(sendimage)
-	await client.send_file(ctx.message.channel, sendimage)
+		#If search term is not found, it uploads a random image from all
+		else :	
+			await client.say ('Sorry no such category, showing random image!')
+			CindexNum = random.randint(0, len(images[0]))
+			category = images[0][CindexNum]
+			imageName = images[1][int(CindexNum)][random.randint(0, len(images[1][CindexNum]) - 1)]
+
+		sendimage = "./ImagePool/" + category + '/' + imageName
+		print(sendimage)
+		await client.send_file(ctx.message.channel, sendimage)
 
 
 #Client Token (Discord App Token)
