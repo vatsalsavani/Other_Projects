@@ -29,14 +29,18 @@ for file in os.listdir('.\ImagePool/') :
 	images[0].append(file)
 	images[1].append(os.listdir('./ImagePool/'+ file))
 
+	
+#Create list of all categories in a readable format
+catList = ''
+for p in images[0] :
+	catList = catList + p + '\n'
 
 @client.command(pass_context = True)
 async def randompic (ctx, search: str) :
 
 	if search == 'list' :
 		await client.say('Categories are : ')
-		for p in images[0] :
-			await client.say(p)
+		await client.say(catList)
 	else :
 		#Uploads random image if search term is part of imagepool categories
 		if search in images[0] :
