@@ -27,5 +27,3 @@ biases = {
     'output': tf.Variable (tf.random_normal ([numOutputs]))
 }
 
-def nn (x):
-    

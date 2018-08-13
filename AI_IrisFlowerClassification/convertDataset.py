@@ -3,7 +3,7 @@ import csv
 new_dataset = []
 
 #Loading the original dataset
-dataset = open('Iris_Dataset.csv', 'r')
+dataset = open('datasetOriginal.csv', 'r')
 reader = csv.reader(dataset)
 for row in reader :
     del row[0]
