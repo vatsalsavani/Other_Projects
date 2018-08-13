@@ -1,8 +1,13 @@
 import tensorflow as tf
+import pandas as pd
+import numpy as np
+import csv
+
+#Loading the dataset
+dataset = open()
 
 #Parameters
 learningRate = 0.1
-
 
 #Network Parameter
 hiddenLayer1 = 3 #Number of neurons in hidden layer 1
