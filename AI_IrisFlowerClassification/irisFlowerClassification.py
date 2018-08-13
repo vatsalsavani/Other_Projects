@@ -4,7 +4,7 @@ import numpy as np
 import csv
 
 #Loading the dataset
-dataset = open()
+#dataset = open('')
 
 #Parameters
 learningRate = 0.1
