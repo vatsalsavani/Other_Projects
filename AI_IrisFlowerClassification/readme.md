@@ -27,12 +27,12 @@ More information can be found regarding the Iris Dataset here :
 The neural network is created using the Tensorflow library in Python; it is a [Deep Feedforward Neural Network](https://en.wikipedia.org/wiki/Feedforward_neural_network), which is also known as a multilayered-perceptron. A feedforward neural network is an artificial neural network wherein connections between the nodes do not form a cycle - this means information is not passed back, it is only passed on forward.
 
 The general structure of the Neural Network used is as follows :
-* Input Layer
+* Input Layer<br/>
   Nodes : 4
-* 2 Hidden Layers :
-  Hidden Layer 1 Nodes : 8
+* 2 Hidden Layers :<br/>
+  Hidden Layer 1 Nodes : 8<br/>
   Hidden Layer 2 Nodes : 8
-* Output Layer
+* Output Layer<br/>
   Nodes : 3
   
 To optimize the network, I use gradient descent which works quite level allowing me to attain an accuracy of 99%.
