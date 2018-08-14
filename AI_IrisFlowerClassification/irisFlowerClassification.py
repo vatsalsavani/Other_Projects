@@ -11,13 +11,15 @@ reader = csv.reader(dataset)
 data = []
 for row in reader :
     if row[4] == 'Iris-setosa' :
-        row[4] = 0
+        row[4] = [1, 0, 0]
     elif row[4] == 'Iris-versicolor' :
-        row[4] = 1
+        row[4] = [0, 1, 0]
     else :
-        row[4] = 2
+        row[4] = [0, 0, 1]
     data.append(row)
 del data[0]
+
+random.shuffle(data)
 
 #Creating Training and Testing data
 testDataSize = 5
@@ -27,23 +29,23 @@ for i in range(testDataSize) :
 
 trainInput = [i[:4] for i in data]
 trainOutput = [i[4] for i in data]
-
 testInput = [i[:4] for i in testingData]
+testOutput =[i[4] for i in testingData]
 
 #Parameters
 learningRate = 0.001
-epoch = 500
+epoch = 700
 interval = 50
 
 #Network Parameter
-hiddenLayer1 = 3 #Number of neurons in hidden layer 1
-hiddenLayer2 = 3 #Number of neurons in hidden layer 2
+hiddenLayer1 = 8 #Number of neurons in hidden layer 1
+hiddenLayer2 = 8 #Number of neurons in hidden layer 2
 numInputs = 4 #Number of inputs
 numOutputs = 3 #Number of outputs
 
 #Placeholders
 inputs = tf.placeholder("float", [None, numInputs])
-target = tf.placeholder("float", [None, numOutputs])
+target = tf.placeholder("float", [145, numOutputs])
 
 #Weights and Biases
 weights = {
@@ -60,10 +62,10 @@ biases = {
 #Creating model
 def nn(x):
     # Hidden layers fully connected layer with all neurons
-    layer1 = tf.add(tf.matmul(x, weights['hL1']), biases['hL1'])
-    layer2 = tf.add(tf.matmul(layer1, weights['hL2']), biases['hL2'])
+    layer1 = tf.nn.relu(tf.add(tf.matmul(x, weights['hL1']), biases['hL1']))
+    layer2 = tf.nn.relu(tf.add(tf.matmul(layer1, weights['hL2']), biases['hL2']))
     # Output fully connected layer with a neuron for each class
-    outLayer = tf.matmul(layer2, weights['output']) + biases['output']
+    outLayer = tf.nn.softmax(tf.matmul(layer2, weights['output']) + biases['output'])
     return outLayer
 
 #Construct model
@@ -71,7 +73,7 @@ model = nn(inputs)
 
 #Loss function and optimizer
 loss = tf.reduce_mean(-tf.reduce_sum(target * tf.log(model), axis=0))
-optimizer = tf.train.GradientDescentOptimizer(learning_rate = learningRate).minimize(loss)
+optimizer = tf.train.AdamOptimizer(learning_rate = learningRate).minimize(loss) #tf.train.GradientDescentOptimizer(learning_rate = learningRate).minimize(loss)
 
 # Initialize all variables
 init = tf.global_variables_initializer()
@@ -87,6 +89,6 @@ with tf.Session() as sess :
             print('Epoch', i, '|', 'Loss:', sess.run(loss, feed_dict={inputs: trainInput, target: trainOutput}))
 
     # Prediction
-    print('Model Predicting Begins . . .')
-    for i in range(len(testDataSize)):
-        print('Actual:', testInput[i], 'Predicted:', np.rint(sess.run(model, feed_dict={inputs: [trainInput[i]]})))
+    print('\nModel Predicting Begins . . .')
+    for i in range(testDataSize):
+        print('Actual:', testOutput[i], 'Predicted:', np.rint(sess.run(model, feed_dict={inputs: [testInput[i]]})))
