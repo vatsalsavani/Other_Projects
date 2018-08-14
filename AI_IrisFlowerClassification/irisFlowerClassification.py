@@ -1,94 +1,129 @@
 import tensorflow as tf
 import pandas as pd
 import numpy as np
-import csv, random
+import csv
+import random
 
-#0 = Iris-Setosa; 1 = Iris-Versicolor; 2 = Iris-Viriginica
+# Dataset creation and editing
 
-#Loading and setting the dataset
-dataset = open('datasetNew.csv', 'r')
-reader = csv.reader(dataset)
-data = []
-for row in reader :
-    if row[4] == 'Iris-setosa' :
+# Output class indentification : [setosa, versicolor, virginica]
+
+# Loading and setting up the dataset
+datasetFile = open('datasetNew.csv', 'r')
+reader = csv.reader(datasetFile)
+dataset = []
+
+# Changing the output from 1 into 3 - this will allow the neural network to process the dataset. This is done because we have 3 different possible outputs.
+for row in reader:
+    if row[4] == 'Iris-setosa':
         row[4] = [1, 0, 0]
-    elif row[4] == 'Iris-versicolor' :
+    elif row[4] == 'Iris-versicolor':
         row[4] = [0, 1, 0]
-    else :
+    else:
         row[4] = [0, 0, 1]
-    data.append(row)
-del data[0]
+    dataset.append(row)
 
-random.shuffle(data)
+del dataset[0]
 
-#Creating Training and Testing data
+random.shuffle(dataset)
+
+# Creating Training and Testing data
+# The number of instances to test with once the Neural Network has been trained
 testDataSize = 5
-testingData = []
-for i in range(testDataSize) :
-    testingData.append((data.pop(random.randint(1, len(data) - 1))))
 
-trainInput = [i[:4] for i in data]
-trainOutput = [i[4] for i in data]
+testingData = []  # Array that will store instances that will be used to test the NN
+
+for i in range(testDataSize):
+    # Removing instances from the complete dataset while also simultaneously appending these instances to the testingData array
+    testingData.append((dataset.pop(random.randint(1, len(dataset) - 1))))
+
+# Data instances (inputs and targets), separated into 2 arrays, for the use of training the neural network
+trainInput = [i[:4] for i in dataset]
+trainOutput = [i[4] for i in dataset]
+# Data instances (inputs and outputs), separated into 2 arrays, for the use of testing the neural network
 testInput = [i[:4] for i in testingData]
-testOutput =[i[4] for i in testingData]
+testOutput = [i[4] for i in testingData]
 
-#Parameters
+# --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+# Neural Network
+
+# Parameters
 learningRate = 0.001
 epoch = 700
 interval = 50
 
-#Network Parameter
-hiddenLayer1 = 8 #Number of neurons in hidden layer 1
-hiddenLayer2 = 8 #Number of neurons in hidden layer 2
-numInputs = 4 #Number of inputs
-numOutputs = 3 #Number of outputs
+# Network Parameters
+hiddenLayer1 = 8  # Number of neurons in hidden layer 1
+hiddenLayer2 = 8  # Number of neurons in hidden layer 2
+numInputs = 4  # Number of total inputs - input nodes
+numOutputs = 3  # Number of total outputs - output nodes
 
-#Placeholders
+# Placeholders
 inputs = tf.placeholder("float", [None, numInputs])
 target = tf.placeholder("float", [145, numOutputs])
 
-#Weights and Biases
+# Weights and Biases
 weights = {
-    'hL1': tf.Variable (tf.random_normal ([numInputs, hiddenLayer1])), #Inputs to Hidden Layer 1
-    'hL2': tf.Variable (tf.random_normal ([hiddenLayer1, hiddenLayer2])), #Hidden Layer 1 to Hidden Layer 2
-    'output': tf.Variable (tf.random_normal ([hiddenLayer2, numOutputs])) #Hidden Layer 2 to Outputs
+    # Inputs to Hidden Layer 1
+    'hL1': tf.Variable(tf.random_normal([numInputs, hiddenLayer1])),
+    # Hidden Layer 1 to Hidden Layer 2
+    'hL2': tf.Variable(tf.random_normal([hiddenLayer1, hiddenLayer2])),
+    # Hidden Layer 2 to Outputs
+    'output': tf.Variable(tf.random_normal([hiddenLayer2, numOutputs]))
 }
 biases = {
-    'hL1': tf.Variable (tf.random_normal ([hiddenLayer1])),
-    'hL2': tf.Variable (tf.random_normal ([hiddenLayer2])),
-    'output': tf.Variable (tf.random_normal ([numOutputs]))
+    # Biases for Hidden Layer 1 Nodes
+    'hL1': tf.Variable(tf.random_normal([hiddenLayer1])),
+    # Biases for Hidden Layer 2 Nodes
+    'hL2': tf.Variable(tf.random_normal([hiddenLayer2])),
+    # Biases for the Output Nodes
+    'output': tf.Variable(tf.random_normal([numOutputs]))
 }
 
-#Creating model
+# Creating the model
+
+
 def nn(x):
     # Hidden layers fully connected layer with all neurons
     layer1 = tf.nn.relu(tf.add(tf.matmul(x, weights['hL1']), biases['hL1']))
-    layer2 = tf.nn.relu(tf.add(tf.matmul(layer1, weights['hL2']), biases['hL2']))
+    layer2 = tf.nn.relu(
+        tf.add(tf.matmul(layer1, weights['hL2']), biases['hL2']))
     # Output fully connected layer with a neuron for each class
-    outLayer = tf.nn.softmax(tf.matmul(layer2, weights['output']) + biases['output'])
-    return outLayer
+    outputLayer = tf.nn.softmax(
+        tf.matmul(layer2, weights['output']) + biases['output'])
+    return outputLayer
 
-#Construct model
+
+# Constructing the model
 model = nn(inputs)
 
-#Loss function and optimizer
+# Loss function and optimizer
 loss = tf.reduce_mean(-tf.reduce_sum(target * tf.log(model), axis=0))
-optimizer = tf.train.AdamOptimizer(learning_rate = learningRate).minimize(loss) #tf.train.GradientDescentOptimizer(learning_rate = learningRate).minimize(loss)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=learningRate).minimize(
+    loss)  # Data is optimized using Gradient Descent
 
 # Initialize all variables
 init = tf.global_variables_initializer()
 
-with tf.Session() as sess :
+with tf.Session() as sess:
     sess.run(init)
 
-    #Training
+    # Training
     print('Model Training Begins . . .')
     for i in range(1, (epoch + 1)):
-        sess.run(optimizer, feed_dict={inputs: trainInput, target: trainOutput})
+        sess.run(optimizer, feed_dict={
+                 inputs: trainInput, target: trainOutput})
         if i % interval == 0:
-            print('Epoch', i, '|', 'Loss:', sess.run(loss, feed_dict={inputs: trainInput, target: trainOutput}))
+            print('Epoch', i, '|', 'Loss:', sess.run(
+                loss, feed_dict={inputs: trainInput, target: trainOutput}))
 
-    # Prediction
+    # Prediction and Testing
     print('\nModel Predicting Begins . . .')
     for i in range(testDataSize):
-        print('Actual:', testOutput[i], 'Predicted:', np.rint(sess.run(model, feed_dict={inputs: [testInput[i]]})))
+        print('Actual:', testOutput[i], 'Predicted:', np.rint(
+            sess.run(model, feed_dict={inputs: [testInput[i]]})))
+
+    # Accuracy
+    print(tf.metrics.accuracy(testOutput[i], np.rint(sess.run(model, feed_dict={inputs: [
+          testInput[i]]})), weights=None, metrics_collections=None, updates_collections=None, name=None))
