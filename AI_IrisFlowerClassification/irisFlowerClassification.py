@@ -1,3 +1,4 @@
+
 import tensorflow as tf
 import pandas as pd
 import numpy as np
@@ -123,7 +124,3 @@ with tf.Session() as sess:
     for i in range(testDataSize):
         print('Actual:', testOutput[i], 'Predicted:', np.rint(
             sess.run(model, feed_dict={inputs: [testInput[i]]})))
-
-    # Accuracy
-    print(tf.metrics.accuracy(testOutput[i], np.rint(sess.run(model, feed_dict={inputs: [
-          testInput[i]]})), weights=None, metrics_collections=None, updates_collections=None, name=None))
