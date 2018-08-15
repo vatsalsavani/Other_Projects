@@ -119,7 +119,12 @@ with tf.Session() as sess:
                 loss, feed_dict={inputs: trainInput, target: trainOutput}))
 
     # Prediction and Testing
+    correctOutput = []
+    predictedOutput = []
+
     print('\nModel Predicting Begins . . .')
     for i in range(testDataSize):
-        print('Actual:', testOutput[i], 'Predicted:', np.rint(
-            sess.run(model, feed_dict={inputs: [testInput[i]]})))
+        correctOutput.append(testOutput[i])
+        predictedOutput.append(
+            np.rint(sess.run(model, feed_dict={inputs: [testInput[i]]})))
+        print('Actual:', correctOutput[i], 'Predicted:', predictedOutput[i])
