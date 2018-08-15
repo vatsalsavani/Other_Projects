@@ -35,4 +35,8 @@ The general structure of the Neural Network used is as follows :
 * Output Layer<br/>
   Nodes : 3
   
-To optimize the network, I use gradient descent which works quite level allowing me to attain an accuracy of 99%.
+To optimize the network, I use gradient descent which works quite level allowing me to attain an accuracy of 99%. To learn more about Gradient Descent, visit the following sites:
+* 3Blue1Brown Youtube Channel - [Neural Network Playlist](https://www.youtube.com/watch?v=IHZwWFHWa-w&vl=en)
+* [Gradient Descent Wikipedia Page](https://en.m.wikipedia.org/wiki/Gradient_descent)
+
+
