@@ -2,6 +2,7 @@
 import tensorflow as tf
 import csv
 import random
+import numpy as np
 
 # Dataset creation and editing
 
@@ -28,7 +29,7 @@ random.shuffle(dataset)
 
 # Creating Training and Testing data
 # The number of instances to test with once the Neural Network has been trained
-testDataSize = 5
+testDataSize = 15
 
 testingData = []  # Array that will store instances that will be used to test the NN
 
@@ -60,7 +61,7 @@ numOutputs = 3  # Number of total outputs - output nodes
 
 # Placeholders
 inputs = tf.placeholder("float", [None, numInputs])
-target = tf.placeholder("float", [145, numOutputs])
+target = tf.placeholder("float", [len(trainInput), numOutputs])
 
 # Weights and Biases
 weights = {
